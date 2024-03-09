@@ -1,0 +1,27 @@
+body {
+  scroll-behavior: smooth;
+  padding: 0px;
+  margin: 0px;
+}
+
+
+.fake-height {
+  min-height: 80vh;
+}
+
+::backdrop {
+  background-image: linear-gradient(
+    45deg,
+    #5bb57a,
+    #4d805e
+  );
+  opacity: 0.7;
+}
+
+dialog {
+  min-width: 500px;
+}
+
+.img-small {
+  max-height: 100px;
+}
