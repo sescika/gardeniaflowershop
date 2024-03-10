@@ -39,7 +39,8 @@
             </div>
         </div>
         <div class="row">
-            <p class="my-3 text-end">Or visit our <a class="text-decoration-none text-success" href="{{route('products')}}">Products</a> page</p>
+            <p class="my-3 text-end">Or visit our <a class="text-decoration-none text-success"
+                    href="{{ route('products') }}">Products</a> page</p>
         </div>
     </div>
 @endsection

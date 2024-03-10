@@ -1,6 +1,6 @@
+
 const baseUrl = window.location.origin;
 const token = $('meta[name="csrf-token"]').attr("content");
-
 function ajaxCallback(
     url,
     method,
@@ -28,3 +28,4 @@ $.ajaxSetup({
         "X-CSRF-TOKEN": token,
     },
 });
+

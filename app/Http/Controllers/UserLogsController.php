@@ -20,15 +20,8 @@ class UserLogsController extends BackendController
         }
 
         if ($request->ajax()) {
-            //dd($request->getUri());
-            $links = (string) $data->links();
-            $data->withPath('/admin/userLogs/' . $order);
-            $all = [
-                'data' => $data,
-                'links' => $links
-            ];
 
-            return response()->json($all);
+            return response()->json($data);
         }
 
         return view('pages.admin.userlogs', ['data' => $data]);

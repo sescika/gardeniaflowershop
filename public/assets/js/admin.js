@@ -266,7 +266,7 @@ window.onload = () => {
             if (lastName == "" || lastName.length < 2) {
                 errors.push("Last name can't be empty.");
             }
-            if (errors.length == 0) {
+            if (errors.length === 0) {
                 document.querySelector("#registerUserDialogForm").submit();
             } else {
                 document.querySelector("#registerUserDialogErrors").innerHTML =
@@ -289,6 +289,7 @@ window.onload = () => {
     //#endregion
 
     //#region UserLogs
+
     if (window.location.pathname.includes("/admin/userLogs")) {
         function getAllUserLogs(order) {
             ajaxCallback(
@@ -304,9 +305,53 @@ window.onload = () => {
             );
         }
 
+        function getAllUserLogsFiltered(url) {
+            $.ajax({
+                url: url,
+                method: "GET",
+                success: function (data) {
+                    displayAllUserLogs(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                },
+                dataType: "json",
+                contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+                processData: false,
+            });
+        }
+
         function displayAllUserLogs(data) {
+            console.log(data);
             let html = `
-            ${data.links}
+            <nav aria-label="Page navigation example">
+            <div class="d-none flex-sm-fill d-sm-flex align-items-sm-center justify-content-sm-between">
+                <p class="small text-muted">
+                Showing
+                    <span class='fw-semibold'>${
+                        data.from ? data.from : "0"
+                    }</span>
+                to
+                    <span class='fw-semibold'>${data.to ? data.to : "0"}</span>
+                of
+                    <span class='fw-semibold'>${data.total}</span>
+                results
+                </p>
+                <ul class="pagination">
+                `;
+
+            data.links.forEach((x) => {
+                if (x.url != null) {
+                    html += `<li class="page-item ${
+                        x.active ? "active" : ""
+                    } "><button class='page-link pl' data-url='${x.url}'>${
+                        x.label
+                    }</button></li>
+                    `;
+                }
+            });
+
+            html += ` </ul> </nav> </div>
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -318,13 +363,13 @@ window.onload = () => {
                         </thead>
                         <tbody>`;
 
-            data.data.data.forEach((l) => {
+            data.data.forEach((l) => {
                 html += `
                                 <tr>
                                     <td>${l.id_log}</td>
                                     <td>${l.type}</td>
                                     <td>${l.message}</td>
-                                    <td>${l.created_at}</td>
+                                    <td>${l.formattedDate}</td>
                                 </td>
                             </tr>
                                 `;
@@ -343,6 +388,10 @@ window.onload = () => {
             let orderValue = $("#sortDate").val();
             getAllUserLogs(orderValue);
         });
+
+        $(document).on("click", ".pl", function () {
+            getAllUserLogsFiltered($(this).attr("data-url"));
+        });
     }
     //#endregion
 
@@ -351,6 +400,10 @@ window.onload = () => {
         const newProduct = document.querySelector("#newProductAdmin");
         const newProductClose = document.querySelector("#dialogClose");
         const newProductDialog = document.querySelector("dialog");
+
+        $(document).on("click", "#dialogClose", function () {
+            newProductDialog.close();
+        });
 
         newProduct.addEventListener("click", () => {
             newProductDialog.showModal();
@@ -435,6 +488,130 @@ window.onload = () => {
             }
         }
 
+        function getProduct(id) {
+            ajaxCallback(
+                `/products/${id}`,
+                "GET",
+                {
+                    _token: token,
+                },
+                function (data) {
+                    fillFormProduct(data);
+                },
+                function (data) {
+                    console.log(data);
+                },
+                "json",
+                "application/x-www-form-urlencoded;charset=UTF-8",
+                true
+            );
+        }
+        function fillFormProduct(data) {
+            console.log(data);
+            newProductDialog.showModal();
+            newProductDialog.innerHTML = "";
+
+            let html = `
+            <div id='editProductAdminErrors' class="my-3">
+            </div>
+            <h4>Edit product:</h4>
+            <hr />
+            <form enctype="multipart/form-data" class='form' action="${baseUrl}/admin/products/update/${data.product.id_flower}" method="POST" name='editProductAdminForm' id='editProductAdminForm'>
+
+                <input type="hidden" id="_method" name="_method" value="PUT" />
+                <input type="hidden" id="_token" name="_token" value="${token}" />
+                <div class="mb-3">
+                    <label class="form-label" for="productName">Name</label>
+                    <input class="form-control" type="text" name="productName" id="productName" value="${data.product.flower_name}" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="productPrice">Price</label>
+                    <input class="form-control" type="number" step="0.1" min="0" name="productPrice" id="productPrice" value="${data.product.current_pricing.price}" />
+                </div>
+                <div class="mb-3">
+                    <p>Categories</p>
+                    <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">`;
+
+            productCatIdArray = [];
+            for (const p in data.product.categories) {
+                productCatIdArray.push(data.product.categories[p].id_category);
+            }
+            data.categories.forEach((c) => {
+                html += `
+                <input type="checkbox" name="productCategories[]" class="btn-check" id="cat-${
+                    c.id_category
+                }" value="${c.id_category}" autocomplete="off" ${
+                    productCatIdArray.includes(c.id_category) ? "checked" : ""
+                } />
+                <label class="btn btn-outline-primary" for="cat-${
+                    c.id_category
+                }">${c.category_name}</label>`;
+            });
+
+            html += `
+                    </div>
+                </div>
+            <div class="mb-3">
+                <div class="mb-3">  
+                    <p>Current image</p>
+                    <img src="${baseUrl}/${data.product.image.path}" alt='${data.product.image.img_name}' class='img-small'/>
+
+                </div>
+                <div class="mb-3">
+                    <label for="productImage" class="form-label">Change image? (PNG, JPG)</label>
+                    <input class="form-control" type="file" id="productImage" name="productImage" accept=".jpg, .jpeg, .png"/>
+                </div>
+            </div>
+            <div class="mt-5 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary" id="dialogClose">Close</button>
+                <button type="submit" class="btn btn-success" id="submitEditProduct">Save</button>
+            </div>
+            </form>
+    
+            `;
+
+            newProductDialog.innerHTML = html;
+        }
+
+        function validateProductEdit() {
+            let name = $("#productName").val();
+            let price = Number($("#productPrice").val());
+            let catArray = $(`input[name='productCategories[]']:checked`)
+                .map(function () {
+                    return this.value;
+                })
+                .get();
+            let img = $("#productImage").val();
+            let errors = [];
+
+            console.log(name, price, catArray, img);
+
+            if (name.length === 0 || name.length < 2) {
+                errors.push("Product name must contain at least 3 letters");
+            }
+
+            if (price < 0.0 || price == 0) {
+                errors.push("Product price must be greater than 0");
+            }
+
+            if (catArray.length === 0) {
+                errors.push("Product must belog to at least 1 category");
+            }
+
+            if (errors.length === 0) {
+                document.querySelector("#editProductAdminForm").submit();
+            } else {
+                document.querySelector("#editProductAdminErrors").innerHTML =
+                    "";
+                var htmlF = ``;
+                errors.forEach((e) => {
+                    htmlF += `<p class='alert alert-danger'>${e}</p>\n`;
+                });
+                document.querySelector("#editProductAdminErrors").innerHTML =
+                    htmlF;
+            }
+        }
+
         //events
         $(document).on("click", ".btnDeleteProduct", function (e) {
             e.preventDefault();
@@ -442,6 +619,17 @@ window.onload = () => {
             let currentId = $(this).attr("data-id");
 
             deleteProduct(currentId);
+        });
+        $(document).on("click", ".btnEditProduct", function (e) {
+            e.preventDefault();
+
+            let currentId = $(this).attr("data-id");
+
+            getProduct(currentId);
+        });
+        $(document).on("click", "#submitEditProduct", function (e) {
+            e.preventDefault();
+            validateProductEdit();
         });
         $(document).on("click", "#refreshProducts", function () {
             getAllProducts();

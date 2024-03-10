@@ -38,8 +38,6 @@ class ProductsController extends BaseController
 
     public function store(ProductRequest $request)
     {
-        // dd($request->productImage); 
-
         $imageName = time() . '.' . $request->productImage->extension();
 
         try {
@@ -69,10 +67,7 @@ class ProductsController extends BaseController
             DB::commit();
             return redirect()->route('admin.products');
         } catch (Exception $e) {
-            // DB::rollBack();
-            // if (File::exists(public_path('/assets/img/products/' . $imageName))) {
-            //     File::delete(public_path('/assets/img/products/' . $imageName));
-            // }
+            parent::writeToLog('error', $e->getMessage());
             return redirect()->back()->with('error-msg', $e->getMessage());
         }
     }
@@ -89,7 +84,7 @@ class ProductsController extends BaseController
             $image->delete();
             File::delete($image->path);
             DB::commit();
-            parent::writeToLog('info', 'Product {' . $id . '} deleted');
+            parent::writeToLog('info', 'Product { ' . $id . ' } deleted');
             return redirect()->route('admin.products');
         } catch (Exception $e) {
             DB::rollBack();
@@ -98,8 +93,51 @@ class ProductsController extends BaseController
         }
     }
 
-    public function update(Request $request, $id)
+
+    public function update(ProductRequest $request, $id)
     {
+        function newProductImage($request)
+        {
+            $imageName = time() . '.' . $request->productImage->extension();
+            $request->productImage->move(public_path('assets/img'), $imageName);
+            $newImage = Image::create([
+                'img_name' => $imageName,
+                'path' => 'assets/img/' . $imageName,
+            ]);
+
+            return $newImage;
+        }
+
+        try {
+            DB::beginTransaction();
+            $productToEdit = Flower::find($id);
+            if (isset($request->productImage)) {
+
+                $oldImg = Image::find($productToEdit->image_id);
+                File::delete($oldImg->path);
+                $productToEdit->image()->dissociate();
+                $productToEdit->image()->associate(newProductImage($request, $productToEdit->image_id));
+            }
+
+            $price = Price::create([
+                'price' => $request->productPrice,
+                'flower_id' => $productToEdit->id_flower,
+                'currency_code' => "EUR",
+                'effective_date' => '2025-01-01',
+            ]);
+
+            $productToEdit->flower_name = $request->productName;
+            $productToEdit->prices()->save($price);
+
+            $productToEdit->save();
+
+            parent::writeToLog('info', Auth::user()->first_name . " edited poduct { " . $productToEdit->id_flower . " }");
+            DB::commit();
+            return redirect()->back()->with('edit-success-msg', "Product edited successfully.");
+        } catch (Exception $e) {
+            //parent::writeToLog('error', $e->getMessage());
+            return redirect()->back()->with('error-msg', $e->getMessage());
+        }
     }
 
     public function index()
@@ -150,9 +188,19 @@ class ProductsController extends BaseController
         return $data;
     }
 
-    public function show($id)
+    public function show(?Request $request, $id)
     {
         $product = Flower::with('currentPricing', 'image', 'categories')->find($id);
+
+        if ($request->ajax()) {
+            $categories = Category::all();
+
+            $data = [
+                'product' => $product,
+                'categories' => $categories,
+            ];
+            return response()->json($data);
+        }
 
         return view('pages.products.show', compact('product'));
     }

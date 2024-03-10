@@ -1,7 +1,5 @@
 window.onload = () => {
     function displayAllProducts(data) {
-        console.log(data);
-
         let html = `
         <nav aria-label="Page navigation example">
         <div class="d-none flex-sm-fill d-sm-flex align-items-sm-center justify-content-sm-between">
@@ -17,9 +15,7 @@ window.onload = () => {
             of
                 <span class='fw-semibold'>${data.products.total}</span>
             results
-            `;
-
-        html += `</p>
+            </p>
             <ul class="pagination">
             `;
 
@@ -58,13 +54,6 @@ window.onload = () => {
     }
 
     function getAllProducts(searchObj) {
-        //console.log(searchObj);
-        // let filtersQuery = ``;
-        // // searchObj.filterValues.forEach((x) => {
-        // //     filtersQuery += x + ",";
-        // // });
-        // console.log(searchObj.query);
-        // console.log(searchObj.sortOrder);
         console.log(searchObj.filters);
         ajaxCallback(
             `/products/filter/${searchObj.query}/${searchObj.sortOrder}/${searchObj.filters}`,

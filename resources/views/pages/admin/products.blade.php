@@ -99,7 +99,8 @@
             </div>
         </div>
     </div>
-    <dialog>
+    <dialog id="dialog">
+
         <h4>Add new product:</h4>
         <hr />
         <form action="{{ route('admin.products.store') }}" method="POST" id="adminProductForm"
@@ -139,7 +140,5 @@
             </div>
 
         </form>
-
-
     </dialog>
 @endsection

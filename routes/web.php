@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\AuthorizationController;
 use App\Http\Controllers\BackendController;
 use App\Http\Controllers\HomeController;
@@ -18,6 +19,8 @@ Route::get('/products/{id}', [ProductsController::class, 'show'])->name('product
 
 Route::get('/register', [RegistrationController::class, 'getRegisterForm'])->name('register');
 Route::post('/register', [RegistrationController::class, 'store'])->name('register.store');
+
+Route::get('/author', [AuthorController::class, 'index'])->name('author');
 
 Route::middleware(['auth'])->group(function () {
     //if admin
@@ -49,13 +52,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/profile', [UserController::class, 'show'])->name('profile');
     });
     Route::put('/profile/update/{id}', [UserController::class, 'update'])->name('profile.update');
-    //password reset    
-    // Route::get('/profile/forgot-password', [UserController::class, 'resetPasswordSendEmailForm'])->name('user.resetPasswordSendEmailForm');
-    // Route::post('/profile/forgot-password', [UserController::class, 'sendEmail'])->name('user.sendEmail');
-
-    // Route::get('/profile/reset-password/{token}', [UserController::class, 'resetPasswordForm'])->name('password.reset');
-    // Route::get('/profile/reset-password', [UserController::class, 'updatePassword'])->name('password.update');
-
 
     //logout
     Route::post('/logout', [AuthorizationController::class, 'performLogout'])->name('logout');
