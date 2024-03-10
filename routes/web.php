@@ -49,12 +49,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/profile', [UserController::class, 'show'])->name('profile');
     });
     Route::put('/profile/update/{id}', [UserController::class, 'update'])->name('profile.update');
-    //password reset
-    Route::get('/profile/forgot-password', [UserController::class, 'resetPasswordSendEmailForm'])->name('user.resetPasswordSendEmailForm');
-    Route::post('/profile/forgot-password', [UserController::class, 'sendEmail'])->name('user.sendEmail');
+    //password reset    
+    // Route::get('/profile/forgot-password', [UserController::class, 'resetPasswordSendEmailForm'])->name('user.resetPasswordSendEmailForm');
+    // Route::post('/profile/forgot-password', [UserController::class, 'sendEmail'])->name('user.sendEmail');
 
-    Route::get('/profile/reset-password/{token}', [UserController::class, 'resetPasswordForm'])->name('password.reset');
-    Route::get('/profile/reset-password', [UserController::class, 'updatePassword'])->name('password.update');
+    // Route::get('/profile/reset-password/{token}', [UserController::class, 'resetPasswordForm'])->name('password.reset');
+    // Route::get('/profile/reset-password', [UserController::class, 'updatePassword'])->name('password.update');
 
 
     //logout

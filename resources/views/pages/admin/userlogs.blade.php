@@ -9,7 +9,7 @@
     flower, shop, buy, online
 @endsection
 @section('PageDescription')
-    Flower shop - Admin pannel
+    Gardenia - Admin pannel
 @endsection
 @section('PageContent')
     <div class="container fake-height my-3">
@@ -27,13 +27,12 @@
                     <div class="col-6">
                         <select name="sortDate" id="sortDate" class="form-select">
                             <option value="desc">Newest</option>
-                            <option value="asc" >Oldest</option>
+                            <option value="asc">Oldest</option>
                         </select>
                     </div>
                 </div>
                 <hr />
                 <div class="table-responsive" id="userLogsDisplay">
-
                     {{ $data->links() }}
                     <table class="table table-striped">
                         <thead>

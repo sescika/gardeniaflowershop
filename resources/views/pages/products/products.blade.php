@@ -9,10 +9,10 @@
     flowers, flower, shop, buy
 @endsection
 @section('PageDescription')
-    Flower shop - Products
+    Gardenia Flower shop - Products
 @endsection
 @section('PageContent')
-    <div class="fake-height">
+    <div class="fake-height my-3">
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-3 col-lg-2">
@@ -25,11 +25,17 @@
                         <div class="mb-3">
                             <h4 class="mb-3">Sort by:</h4>
                             <select class='form-select' name="productsSelect" id="productsSelect">
-                                <option value="0" selected='selected'>Select</option>
-                                <option value="name-asc">Name ascending</option>
-                                <option value="name-desc">Name descending</option>
-                                <option value="price-asc">Price ascending</option>
-                                <option value="price-desc">Price descending</option>
+                                <option value="0" @if (old('productsSelect') == '0') selected='selected' @endif>
+                                    Select</option>
+                                <option value="name-asc" @if (old('productsSelect') == 'name-asc') selected='selected' @endif>Name
+                                    A - Z</option>
+                                <option value="name-desc" @if (old('productsSelect') == 'name-desc') selected='selected' @endif>Name
+                                    Z - A</option>
+                                <option value="price-asc" @if (old('productsSelect') == 'price-asc') selected='selected' @endif>Price
+                                    Low - High</option>
+                                <option value="price-desc" @if (old('productsSelect') == 'price-desc') selected='selected' @endif>
+                                    Price
+                                    High - Low</option>
                             </select>
                         </div>
                         <hr />
@@ -38,8 +44,8 @@
                             <hr />
                             @foreach ($categories as $c)
                                 <div class="form-check mb-3">
-                                    <input class="form-check-input form-filters" name='form-filters' type="checkbox" role="switch"
-                                        id="{{ $c->id_category }}cb" value="{{$c->id_category}}"/>
+                                    <input class="form-check-input form-filters" name='form-filters' type="checkbox"
+                                        role="switch" id="{{ $c->id_category }}cb" value="{{ $c->id_category }}" />
                                     <label class="form-check-label text-capitalize"
                                         for="{{ $c->id_category }}cb">{{ $c->category_name }}</label>
                                 </div>
@@ -58,7 +64,6 @@
                                         <img src="{{ asset($p->image->path) }}" class="card-img-top"
                                             alt="{{ $p->image->img_name }}" />
                                     </a>
-
                                     <div class="card-body">
                                         <h5 class="card-title">{{ $p->flower_name }}</h5>
                                         <p class="fw-light">{{ $p->currentPricing->price }}&euro;</p>

@@ -10,6 +10,7 @@ use App\Models\Price;
 use Exception;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProductsController extends BaseController
@@ -64,6 +65,7 @@ class ProductsController extends BaseController
             ]);
 
             $newProduct->categories()->sync($request->productCategories);
+            parent::writeToLog('info', Auth::user()->first_name . " added new product { " . $newProduct->id_flower . " }");
             DB::commit();
             return redirect()->route('admin.products');
         } catch (Exception $e) {
@@ -87,7 +89,7 @@ class ProductsController extends BaseController
             $image->delete();
             File::delete($image->path);
             DB::commit();
-            parent::writeToLog('info', 'Product ' . $id . ' deleted.');
+            parent::writeToLog('info', 'Product {' . $id . '} deleted');
             return redirect()->route('admin.products');
         } catch (Exception $e) {
             DB::rollBack();
@@ -103,18 +105,14 @@ class ProductsController extends BaseController
     public function index()
     {
         $categories = Category::all();
-        $products = Flower::with('currentPricing', 'image', 'categories')->paginate(6);
+        $products = Flower::query()->with('currentPricing', 'image', 'categories')->paginate(6);
 
         return view('pages.products.products', compact('products', 'categories'));
     }
 
-    public function filter($query = "0", $sortOrder = "0", $filters = [])
+    public function filter($query = "0", $sortOrder = "0", $filters = array())
     {
         $categories = Category::all();
-        // $upit = Flower::join('images', 'flowers.image_id', '=', 'images.id_image')
-        //     ->join('category_flowers', 'flowers.id_flower', '=', 'category_flowers.flower_id')
-        //     ->join('categories', 'categories.id_category', '=', 'category_flowers.category_id')
-        //     ->join('prices', 'prices.flower_id', '=', 'flowers.id_flower')->where('prices.effective_date', '>', now());
         $upit = Flower::with('currentPricing', 'image', 'categories');
 
         if (isset($query) && $query != "0") {
@@ -129,21 +127,27 @@ class ProductsController extends BaseController
                 $upit->orderBy('flower_name', 'desc');
             }
             if ($sortOrder == 'price-asc') {
-             
+                $upit->orderBy(Price::select('price')->whereColumn('prices.flower_id', 'flowers.id_flower')->latest());
+            }
+            if ($sortOrder == 'price-desc') {
+                $upit->orderByDesc(Price::select('price')->whereColumn('prices.flower_id', 'flowers.id_flower')->latest());
             }
         }
 
-        if (isset($filters) && $filters) {
-            //$upit->orderBy('flower_name');
+        if (isset($filters) && $filters != "[]") {
+            // dd(json_decode($filters));
+            $filters = json_decode($filters);
+            $upit->whereHas('categories', function ($q) use ($filters) {
+                $q->whereIn('category_flowers.category_id', $filters);
+            });
         }
 
-        $products = $upit->paginate(6);
-
         $data = [
-            'products' => $products,
+            'products' => $upit->paginate(6),
             'categories' => $categories,
+            'links' => $upit->paginate(6)->links(),
         ];
-        return response()->json($data);
+        return $data;
     }
 
     public function show($id)

@@ -15,7 +15,7 @@ class ImageSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create();
-        for ($i = 1; $i <= 20; $i++) {
+        for ($i = 1; $i <= 33; $i++) {
             Image::create([
                 'img_name' => $i . '_flower',
                 'path' => 'assets/img/'.$i . '.jpg',

@@ -6,13 +6,13 @@
     flowers, flower, shop, buy,
 @endsection
 @section('PageDescription')
-    Flower shop - Register
+    Gardenia - Register
 @endsection
 @section('PageSpecificScript')
-<script src="{{ asset('assets/js/registerValidation.js')}}" type="text/javascript"></script>
+    <script src="{{ asset('assets/js/registerValidation.js') }}" type="text/javascript"></script>
 @endsection
 @section('PageContent')
-    <div class="container fake-height">
+    <div class="container fake-height my-3">
         <div class="row d-flex justify-content-center">
             <div class="col-12 col-md-8 col-lg-6" id="registrationErrors">
                 @if ($errors->any())
@@ -58,13 +58,13 @@
                     </div>
                     <div class="mb-3">
                         <label for="first_name">First Name:</label>
-                        <input type="text" class="form-control" id="first_name" name="first_name"
-                            placeholder="John" value="{{ old('first_name') }}" />
+                        <input type="text" class="form-control" id="first_name" name="first_name" placeholder="John"
+                            value="{{ old('first_name') }}" />
                     </div>
                     <div class="mb-3">
                         <label for="last_name">Last Name:</label>
-                        <input type="text" class="form-control" id="last_name" name="last_name"
-                            placeholder="Doe" value="{{ old('last_name') }}" />
+                        <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Doe"
+                            value="{{ old('last_name') }}" />
                     </div>
                     <p class="text-muted font-weight-light font-italic mb-4">Note: Password must contain on letter and one
                         number, min 8 characters. </p>

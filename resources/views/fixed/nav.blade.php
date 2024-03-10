@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg text-uppercase bg-dark mb-3" data-bs-theme="dark">
+<nav class="navbar navbar-expand-lg text-uppercase bg-dark" data-bs-theme="dark">
     <div class="container">
         <a class="navbar-brand text-success" href="{{ route('home') }}">Gardenia</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"

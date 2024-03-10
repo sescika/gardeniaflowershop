@@ -34,6 +34,19 @@ class FlowerSeeder extends Seeder
         'Winter Oasis',
         'Dreamland Bouquet',
         'Admiration Luxury Bouquet',
+        'Cherished Friend Bouquet',
+        'White Rose Arrangement',
+        'Lilies & More Arrangement',
+        'FTD\'s New Dream Bouquet',
+        'Pastel Rose Bouquet',
+        'Pink Lily Bouquet',
+        'Lush Lily Bouquet',
+        'Arrive In Style by Teleflora',
+        'Citrus Splash',
+        'Enchanted Cottage',
+        'Eternal Love Bouquet',
+        'Eternal Love Premium Bouquet',
+        'Love and Laughter in a Clear Vase',
     ];
 
     public function run(): void
@@ -45,7 +58,7 @@ class FlowerSeeder extends Seeder
                 'image_id' => $key + 1,
             ]);
 
-            for ($j = 0; $j < rand(1, 3); $j++) {
+            for ($j = 0; $j < rand(2, 5); $j++) {
                 DB::table('category_flowers')->updateOrInsert([
                     'flower_id' => $id->id_flower,
                     'category_id' => rand(1, 9),

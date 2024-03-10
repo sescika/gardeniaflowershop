@@ -5,7 +5,7 @@
     <meta name="description" content="@yield('PageDescription')" />
     <meta name="keywords" content="@yield('PageKeywords')" />
 
-    <title>Shop - @yield('PageTitle')</title>
+    <title>Gardenia | @yield('PageTitle')</title>
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}" />
@@ -18,6 +18,11 @@
 
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/20e4f2537d.js" crossorigin="anonymous"></script>
+
+    <!-- font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap" rel="stylesheet" />
 
 
 

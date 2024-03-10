@@ -2,6 +2,10 @@ body {
   scroll-behavior: smooth;
   padding: 0px;
   margin: 0px;
+  font-family: "Comfortaa", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 
 
@@ -24,4 +28,21 @@ dialog {
 
 .img-small {
   max-height: 100px;
+}
+
+#cover {
+  background-image: url("../img/cover.jpg");
+  min-height: 850px;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.darken {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.carousel-image-size {
+  min-height: 50vh;
 }

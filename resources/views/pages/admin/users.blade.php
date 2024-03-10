@@ -9,7 +9,7 @@
     flower, shop, buy, online
 @endsection
 @section('PageDescription')
-    Flower shop - Admin pannel
+    Gardenia - Admin pannel
 @endsection
 @section('PageContent')
     <div class="container fake-height my-3">
@@ -59,6 +59,7 @@
                 <hr />
                 <div class="row">
                     <div class="table-responsive" id="userDisplay">
+                        {{ $data['users']->links() }}
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -89,7 +90,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $data['users']->links() }}
+
                     </div>
                 </div>
 

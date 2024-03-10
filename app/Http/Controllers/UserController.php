@@ -137,57 +137,57 @@ class UserController extends BackendController
         }
     }
 
-    public function sendEmail(Request $request)
-    {
-        // dd($request->all());
-        $request->validate(['updateUserEmail' => 'required|email']);
-        $email = [
-            'email' => $request->only('updateUserEmail')
-        ];
-        $status = Password::sendResetLink(
-            $email
-        );
+    // public function sendEmail(Request $request)
+    // {
+    //     // dd($request->all());
+    //     $request->validate(['updateUserEmail' => 'required|email']);
+    //     $email = [
+    //         'email' => $request->only('updateUserEmail')
+    //     ];
+    //     $status = Password::sendResetLink(
+    //         $email
+    //     );
 
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with(['status' => __($status)])
-            : back()->withErrors(['email' => __($status)]);
-    }
-    public function updatePassword(Request $request)
-    {
-        // dd($request->all());
-        $request->validate([
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|min:8|confirmed',
-        ]);
+    //     return $status === Password::RESET_LINK_SENT
+    //         ? back()->with(['status' => __($status)])
+    //         : back()->withErrors(['email' => __($status)]);
+    // }
+    // public function updatePassword(Request $request)
+    // {
+    //     // dd($request->all());
+    //     $request->validate([
+    //         'token' => 'required',
+    //         'email' => 'required|email',
+    //         'password' => 'required|min:8|confirmed',
+    //     ]);
 
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function (User $user, string $password) {
-                $user->forceFill([
-                    'password' => Hash::make($password)
-                ])->setRememberToken(Str::random(60));
+    //     $status = Password::reset(
+    //         $request->only('email', 'password', 'password_confirmation', 'token'),
+    //         function (User $user, string $password) {
+    //             $user->forceFill([
+    //                 'password' => Hash::make($password)
+    //             ])->setRememberToken(Str::random(60));
 
-                $user->save();
+    //             $user->save();
 
-                event(new PasswordReset($user));
-            }
-        );
+    //             event(new PasswordReset($user));
+    //         }
+    //     );
 
-        return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', __($status))
-            : back()->withErrors(['email' => [__($status)]]);
-    }
+    //     return $status === Password::PASSWORD_RESET
+    //         ? redirect()->route('login')->with('status', __($status))
+    //         : back()->withErrors(['email' => [__($status)]]);
+    // }
 
-    public function resetPasswordSendEmailForm()
-    {
-        return view('pages.user.resetPasswordSendEmailForm');
-    }
+    // public function resetPasswordSendEmailForm()
+    // {
+    //     return view('pages.user.resetPasswordSendEmailForm');
+    // }
 
-    public function resetPasswordForm()
-    {
-        return view('pages.user.resetPasswordForm');
-    }
+    // public function resetPasswordForm()
+    // {
+    //     return view('pages.user.resetPasswordForm');
+    // }
 
     /**
      * Remove the specified resource from storage.

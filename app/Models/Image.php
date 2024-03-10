@@ -19,7 +19,6 @@ class Image extends Model
     ];
 
 
-
     public function flower(): HasOne
     {
         return $this->hasOne(Flower::class);

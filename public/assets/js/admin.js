@@ -17,6 +17,7 @@ window.onload = () => {
         function displayAllUsers(data) {
             console.log(data);
             let html = `
+            ${data.links}
             <table class="table table-striped">
             <thead>
                 <tr>
@@ -49,7 +50,7 @@ window.onload = () => {
             html += `
             </tbody>
             </table>
-            ${data.links}
+
             `;
 
             document.querySelector("#userDisplay").innerHTML = html;
@@ -332,7 +333,7 @@ window.onload = () => {
             html += `
                         </tbody>
                     </table>
-                    ${data.links}
+
             `;
 
             $("#userLogsDisplay").html(html);
@@ -376,6 +377,7 @@ window.onload = () => {
         function displayAllProducts(data) {
             console.log(data);
             let html = `
+            ${data.links}
             <table class="table table-striped">
             <thead>
                 <tr>
@@ -408,7 +410,7 @@ window.onload = () => {
             html += `
             </tbody>
             </table>
-            ${data.links}
+
             `;
 
             document.querySelector("#productDisplay").innerHTML = html;

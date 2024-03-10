@@ -23,11 +23,13 @@ window.onload = () => {
             <ul class="pagination">
             `;
 
-        data.products.links.forEach((x, index) => {
+        data.products.links.forEach((x) => {
             if (x.url != null) {
                 html += `<li class="page-item ${
                     x.active ? "active" : ""
-                } "><a class="page-link" href='${x.url}'>${x.label}</a></li>
+                } "><button class='page-link pl' data-url='${x.url}'>${
+                    x.label
+                }</button></li>
                 `;
             }
         });
@@ -63,7 +65,7 @@ window.onload = () => {
         // // });
         // console.log(searchObj.query);
         // console.log(searchObj.sortOrder);
-        // console.log(searchObj.filters);
+        console.log(searchObj.filters);
         ajaxCallback(
             `/products/filter/${searchObj.query}/${searchObj.sortOrder}/${searchObj.filters}`,
             "GET",
@@ -75,6 +77,22 @@ window.onload = () => {
                 console.log(data);
             }
         );
+    }
+
+    function getAllProductsFiltered(url) {
+        $.ajax({
+            url: url,
+            method: "GET",
+            success: function (data) {
+                displayAllProducts(data);
+            },
+            error: function (data) {
+                console.log(data);
+            },
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            processData: false,
+        });
     }
 
     function lsSet(name, value) {
@@ -91,16 +109,16 @@ window.onload = () => {
         let searchObj = {
             query: "0",
             sortOrder: "0",
-            filters: [],
+            filters: new Array(),
         };
 
-        let checkboxesArray = document.querySelectorAll(".form-filters");
+        let checkboxesArray = document.querySelectorAll(
+            "input[type=checkbox]:checked"
+        );
         let checkboxValues = [];
 
         for (let i = 0; i < checkboxesArray.length; i++) {
-            if (checkboxesArray[i].checked) {
-                checkboxValues.push(checkboxesArray[i].value);
-            }
+            checkboxValues.push(Number(checkboxesArray[i].value));
         }
 
         let inputQ = $("#productsSearch").val().toLowerCase();
@@ -117,7 +135,8 @@ window.onload = () => {
         if (inputF.length != 0) {
             searchObj.filters = inputF;
         }
-        console.log(searchObj);
+
+        searchObj.filters = JSON.stringify(searchObj.filters);
         return searchObj;
     }
 
@@ -126,11 +145,16 @@ window.onload = () => {
     });
 
     $(document).on("change", "#productsSelect", function () {
-        // getAllProducts(getSearchParameters());
         getAllProducts(getSearchParameters());
     });
 
     $(document).on("change", ".form-filters", function () {
         getAllProducts(getSearchParameters());
+    });
+    $(document).on("change", ".form-filters", function () {
+        getAllProducts(getSearchParameters());
+    });
+    $(document).on("click", ".pl", function () {
+        getAllProductsFiltered($(this).attr("data-url"));
     });
 };

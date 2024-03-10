@@ -1,15 +1,15 @@
 @extends('layouts.layout')
 @section('PageTitle')
-    Products
+    {{ $product->flower_name }}
 @endsection
 @section('PageKeywords')
     flowers, flower, shop, buy
 @endsection
 @section('PageDescription')
-    Flower shop - Products
+    Gardenia - Products
 @endsection
 @section('PageContent')
-    <div class="fake-height">
+    <div class="fake-height my-3">
         <div class="container">
             <div class="row">
                 <div class="col-12">

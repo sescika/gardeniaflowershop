@@ -6,13 +6,13 @@
     flower, shop, buy, online
 @endsection
 @section('PageDescription')
-    Flower shop - Login
+    Gardenia- Login
 @endsection
 @section('PageSpecificScript')
     <script src="{{ asset('assets/js/loginValidation.js') }}" type="text/javascript"></script>
 @endsection
 @section('PageContent')
-    <div class="container fake-height">
+    <div class="container fake-height my-3">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-6" id="loginErrors">
                 @if (session('error-msg'))

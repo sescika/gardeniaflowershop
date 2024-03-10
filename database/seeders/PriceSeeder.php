@@ -16,7 +16,7 @@ class PriceSeeder extends Seeder
     {
 
         $faker = Faker::create();
-        for ($i = 1; $i <= 20; $i++) {
+        for ($i = 1; $i <= 33; $i++) {
             Price::create([
                 'flower_id' => $i,
                 'price' => $faker->randomFloat(2, 20.99, 199.99),
