@@ -8,6 +8,7 @@ use App\Models\Flower;
 use App\Models\Image;
 use App\Models\Price;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -128,7 +129,7 @@ class ProductsController extends BaseController
 
             $productToEdit->flower_name = $request->productName;
             $productToEdit->prices()->save($price);
-
+            $productToEdit->categories()->sync($request->productCategories);
             $productToEdit->save();
 
             parent::writeToLog('info', Auth::user()->first_name . " edited poduct { " . $productToEdit->id_flower . " }");
@@ -173,7 +174,6 @@ class ProductsController extends BaseController
         }
 
         if (isset($filters) && $filters != "[]") {
-            // dd(json_decode($filters));
             $filters = json_decode($filters);
             $upit->whereHas('categories', function ($q) use ($filters) {
                 $q->whereIn('category_flowers.category_id', $filters);
